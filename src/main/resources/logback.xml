@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="ConsoleLoggerStdOut" class="ch.qos.logback.core.ConsoleAppender">
+        <springProfile name="!prod">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>%d{HH:mm:ss.SSS} %blue(%-6marker) %highlight(%-5level) %mdc{flowId} %mdc{outletId} %mdc{channel} %mdc{basketId} %mdc{basketItemId} %mdc{orderNumber} %mdc{userId} %mdc{testRequest} %mdc{xOms} %logger{50} | %gray(%M) %-3line - %msg%n%rEx</Pattern>
+            </layout>
+        </springProfile>
+
+        <springProfile name="prod">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            </encoder>
+        </springProfile>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ConsoleLoggerStdOut"/>
+    </root>
+</configuration>

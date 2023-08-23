@@ -1,0 +1,46 @@
+name: Build and Upload to GCR
+
+on: push
+
+env:
+  JAVA_VERSION: 17
+  JAVA_DISTRIBUTION: zulu
+  IMAGE_NAME: api-service
+  ARTIFACT_REGISTRY: europe-west4-docker.pkg.dev/mms-clp-playground2308-a-8c8o/cloudapps-container-registry
+
+jobs:
+  build:
+    name: Build and Upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - name: Build with gradle
+        run: chmod +x gradlew && ./gradlew clean build bootJar
+
+      - id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Build container image
+        shell: bash
+        run: |
+          DOCKER_NAME=${{ env.ARTIFACT_REGISTRY }}/${{ env.IMAGE_NAME }}
+          SHA_DOCKER_IMAGE=$DOCKER_NAME:${{ github.sha }}
+          docker build -t $SHA_DOCKER_IMAGE .
+          docker tag $SHA_DOCKER_IMAGE $DOCKER_NAME:latest
+          
+          gcloud auth configure-docker europe-west4-docker.pkg.dev
+          docker push --all-tags $DOCKER_NAME

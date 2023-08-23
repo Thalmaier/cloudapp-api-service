@@ -1,0 +1,24 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb+srv://cloudapplications:cloudapplications@cloudapplicationsthi.oimemmg.mongodb.net/CloudApplicationsDB?retryWrites=true&w=majority
+      auto-index-creation: true
+      uuid-representation: standard
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_empty
+    property-naming-strategy: SNAKE_CASE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+jwt:
+  secretKey: h/NT53Km1kPgm8TpIN9OQfHRpO4WpyCRUa7y2hQ5xvo=
+  validityInSeconds: 86400

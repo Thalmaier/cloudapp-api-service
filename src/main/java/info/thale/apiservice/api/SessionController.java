@@ -1,10 +1,15 @@
 package info.thale.apiservice.api;
 
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -22,6 +27,7 @@ import info.thale.apiservice.auth.model.AuthenticatedUser;
 import info.thale.apiservice.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -31,9 +37,23 @@ public class SessionController {
     private final JwtTokenAuthService tokenProvider;
     private final ReactiveAuthenticationManager authenticationManager;
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public void sendMessage(String msg) {
+        kafkaTemplate.send("topicName", msg);
+    }
+
+    @KafkaListener(topics = "topicName", groupId = "groupId")
+    public void listenGroupFoo(String message) {
+        System.out.println("Received Message in group foo: " + message);
+    }
 
     @PostMapping("/api/token")
     public Mono<ResponseEntity<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
+
+        sendMessage("HELLO");
+
         return authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password()))
                 .map(tokenProvider::createJwtToken)

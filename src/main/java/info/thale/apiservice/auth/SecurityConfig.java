@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.annotation.web.socket.EnableWebSocketSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -16,6 +18,7 @@ import static info.thale.apiservice.domain.UserRoles.ADMIN;
 import static info.thale.apiservice.domain.UserRoles.USER;
 
 @Configuration
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
@@ -35,6 +38,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http, JwtTokenAuthService jwtTokenAuthService) {
+
         http
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(request ->
@@ -58,7 +62,7 @@ public class SecurityConfig {
                 )
                 .authorizeExchange(request ->
                         request.pathMatchers("/actuator/**").permitAll()
-                );
+                ).authorizeExchange().pathMatchers("/ws/**").permitAll();
 
         http.addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenAuthService), SecurityWebFiltersOrder.HTTP_BASIC);
 

@@ -1,7 +1,8 @@
+
+
 spring:
-  devtools:
-    restart:
-      enabled: true
+  profiles:
+    default: local
   data:
     mongodb:
       uri: mongodb+srv://cloudapplications:cloudapplications@cloudapplicationsthi.oimemmg.mongodb.net/CloudApplicationsDB?retryWrites=true&w=majority
@@ -13,6 +14,10 @@ spring:
     default-property-inclusion: non_empty
     property-naming-strategy: SNAKE_CASE
 
+  kafka:
+    bootstrap-servers: http://localhost:9092
+
+
 management:
   endpoints:
     web:
@@ -22,3 +27,24 @@ management:
 jwt:
   secretKey: h/NT53Km1kPgm8TpIN9OQfHRpO4WpyCRUa7y2hQ5xvo=
   validityInSeconds: 86400
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  devtools:
+    restart:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  devtools:
+    restart:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/api-service?authSource=admin

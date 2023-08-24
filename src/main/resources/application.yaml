@@ -27,7 +27,8 @@ management:
 jwt:
   secretKey: h/NT53Km1kPgm8TpIN9OQfHRpO4WpyCRUa7y2hQ5xvo=
   validityInSeconds: 86400
-
+server:
+  port: 8085
 ---
 spring:
   config:

@@ -6,6 +6,8 @@ public enum UserRoles implements GrantedAuthority {
 
     USER,
 
+    SUBSCRIBER,
+
     ADMIN;
 
     @Override

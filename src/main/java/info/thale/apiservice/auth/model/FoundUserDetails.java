@@ -7,9 +7,10 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import info.thale.apiservice.domain.UserId;
 import info.thale.apiservice.domain.UserRoles;
 
-public record FoundUserDetails(UUID userId, String email, String encryptedPassword, List<UserRoles> userRoles) implements UserDetails {
+public record FoundUserDetails(UserId userId, String email, String encryptedPassword, List<UserRoles> userRoles) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -42,6 +42,9 @@ public class SecurityConfig {
         http
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(request ->
+                        request.pathMatchers("**").permitAll()
+                )
+                .authorizeExchange(request ->
                         request.pathMatchers("/api/token").permitAll()
                 )
                 .authorizeExchange(request ->
@@ -62,7 +65,7 @@ public class SecurityConfig {
                 )
                 .authorizeExchange(request ->
                         request.pathMatchers("/actuator/**").permitAll()
-                ).authorizeExchange().pathMatchers("/ws/**").permitAll();
+                );
 
         http.addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenAuthService), SecurityWebFiltersOrder.HTTP_BASIC);
 

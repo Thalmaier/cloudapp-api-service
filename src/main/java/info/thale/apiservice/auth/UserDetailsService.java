@@ -19,10 +19,10 @@ public class UserDetailsService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String username) {
         return usersRepository.findUserByEmail(username)
                 .map(user -> new FoundUserDetails(
-                                user.getId(),
-                                user.getEmail(),
-                                user.getEncryptedPassword(),
-                                user.getRoles()
+                                user.id(),
+                                user.email(),
+                                user.encryptedPassword(),
+                                user.roles()
                         )
                 );
     }

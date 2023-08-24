@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: ApiService
+  description: API.
+  version: 0.0.1
+paths:
+  /api/job-offers:
+    post:
+      summary: Create a new job offer or the logged in user.
+      tags:
+        - JobOffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '204':
+          description: The request was received and will be processed.
+
+components:
+  schemas:
+    JobOfferCreationRequest:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        salary:
+          $ref: '#/components/schemas/Money'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
+    Skill:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        rating:
+          $ref: '#/components/schemas/SkillRating'
+    SkillRating:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+        description:
+          type: string
+    Money:
+      type: object
+      description: A monetary value.
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: number
+          format: float
+          description: Amount of money.
+          example: 123.45
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+          description: Currency code (ISO 4217).
+          example: EUR

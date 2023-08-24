@@ -68,7 +68,7 @@ public class JwtTokenAuthService {
                 .getBody();
 
         return userRepository.findUserByEmail(claims.getSubject())
-                .map(User::getRoles)
+                .map(User::roles)
                 .map(authorities ->
                         new AuthenticatedUser(
                                 UUID.fromString(claims.get(JWT_USER_ID_CLAIM_NAME).toString()),
